@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\consorcios;
 use App\Models\banco;
 use App\Models\Gastos;
+use App\Models\proveedoresPropios;
 
 class consorcios_control extends Controller
 {
@@ -46,8 +47,13 @@ class consorcios_control extends Controller
     {
         $consorcio = consorcios::where('idcons', $id)->firstOrFail();
 
+        // EL MISMO MOZO carga la segunda cosa en la bandeja
+        $prov = proveedoresPropios::where('idcons', $id)->get();
+
+        // El mozo sale a la mesa (view) con la bandeja completa
         return view('consorcios.show', [
-            'consorcio' => $consorcio
+            'consorcio' => $consorcio,
+            'prov' => $prov
         ]);
     }
 }
