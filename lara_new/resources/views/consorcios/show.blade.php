@@ -9,7 +9,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white p-6 shadow sm:rounded-lg">
                 <p><strong>ID:</strong> {{ $consorcio->idcons }}</p>
-                <p><strong>Base de datos:</strong> {{ $consorcio->base }}</p>
+                <!-- <p><strong>Base de datos:</strong> {{ $consorcio->base }}</p> -->
                 <hr class="my-4">
                 <a href="{{ route('dashboard') }}" class="text-blue-500">Volver al listado</a>
             </div>
@@ -34,19 +34,19 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
       <div class="bg-white rounded-2xl shadow p-5">
         <p class="text-sm text-gray-500">Unidades Funcionales</p>
-        <p class="text-3xl font-bold">24</p>
+        <p class="text-3xl font-bold"> {{ $consorcio->unidadesFuncionales->count() }} </p>
       </div>
       <div class="bg-white rounded-2xl shadow p-5">
         <p class="text-sm text-gray-500">Proveedores</p>
-        <p class="text-3xl font-bold">{{ $prov->count() }}</p>
+        <p class="text-3xl font-bold">{{ $consorcio->proveedoresPropios->count() }}</p>
       </div>
       <div class="bg-white rounded-2xl shadow p-5">
-        <p class="text-sm text-gray-500">Gastos del Mes</p>
-        <p class="text-3xl font-bold">$ 1.250.000</p>
+        <p class="text-sm text-gray-500">Gastos pendientes</p>
+        <p class="text-3xl font-bold">{{ $consorcio->gastos->count() }}</p>
       </div>
       <div class="bg-white rounded-2xl shadow p-5">
         <p class="text-sm text-gray-500">Saldo en Caja</p>
-        <p class="text-3xl font-bold text-green-600">$ 540.000</p>
+        <p class="text-3xl font-bold text-green-600">$ {{ number_format($consorcio->cajas->sum('importe'), 2, ',', '.') }}</p>
       </div>
     </div>
 
@@ -56,37 +56,35 @@
         <h2 class="text-xl font-semibold">Gastos a Proveedores</h2>
         <button class="bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700">+ Nuevo Gasto</button>
       </div>
+        <table class="w-full text-sm">
+          <thead class="border-b">
+            <tr>
+              <th class="py-2 text-left">Proveedor</th>
+              <!-- <th class="py-2 text-left">Rubro</th> -->
+              <th class="py-2 text-left">Control</th>
+              <th class="py-2 text-left">Monto</th>
+              <th class="py-2 text-left">Estado</th>
+              <th class="py-2 text-left">Fecha</th>
+            </tr>
+          </thead>
+          <tbody class="text-gray-700">
+            @foreach ($consorcio->gastos as $gasto)
+            <tr class="border-b">
+              <td class="py-2">{{ $gasto->infoProveedor->proveedor ?? 'Proveedor no encontrado' }}</td>
+              <!-- <td class="py-2">{{ $gasto->rubro }}</td> -->
+              <td class="py-2">{{ $gasto->idcontrol }}</td>
+              <td class="py-2">${{ number_format($gasto->monto, 0, ',', '.') }}</td>
+              @if ($gasto->liquidado === 's')
+                <td class="py-2 text-green-600">Pagado</td>
+              @else
+                <td class="py-2 text-yellow-600">Pendiente</td>
+              @endif
+              <td class="py-2">{{ \Carbon\Carbon::parse($gasto->fecha)->format('d/m/Y') }}</td>
+            </tr>
+            @endforeach
+          </tbody>
+        </table>
 
-      <table class="w-full text-sm">
-        <thead class="border-b">
-          <tr>
-            <th class="py-2 text-left">Proveedor</th>
-            <th class="py-2 text-left">Rubro</th>
-            <th class="py-2 text-left">Concepto</th>
-            <th class="py-2 text-left">Monto</th>
-            <th class="py-2 text-left">Estado</th>
-            <th class="py-2 text-left">Fecha</th>
-          </tr>
-        </thead>
-        <tbody class="text-gray-700">
-          <tr class="border-b">
-            <td class="py-2">Limpieza SRL</td>
-            <td class="py-2">Mantenimiento</td>
-            <td class="py-2">Servicio mensual</td>
-            <td class="py-2">$ 320.000</td>
-            <td class="py-2 text-yellow-600">Pendiente</td>
-            <td class="py-2">01/01/2026</td>
-          </tr>
-          <tr class="border-b">
-            <td class="py-2">Edesur</td>
-            <td class="py-2">Servicios</td>
-            <td class="py-2">Electricidad</td>
-            <td class="py-2">$ 180.000</td>
-            <td class="py-2 text-green-600">Pagado</td>
-            <td class="py-2">05/01/2026</td>
-          </tr>
-        </tbody>
-      </table>
     </section>
 
     <!-- Pagos a Proveedores -->

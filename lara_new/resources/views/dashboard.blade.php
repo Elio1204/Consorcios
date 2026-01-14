@@ -91,9 +91,7 @@
                         <td class="px-6 py-4">
                             {{ $consorcio->direccion }}
                         </td>
-                        <td class="px-6 py-4">
-                            {{ $consorcio->barrio }}
-                        </td>
+ 
                         <td><a href="{{ route('consorcios.show', $consorcio->idcons) }}" class="text-blue-500 hover:text-blue-700">Ver</a></td>
                     </tr>
                     @endforeach

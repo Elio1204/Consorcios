@@ -7,6 +7,9 @@ use App\Models\consorcios;
 use App\Models\banco;
 use App\Models\Gastos;
 use App\Models\proveedoresPropios;
+use App\Models\unidadesFuncionales;
+use App\Models\cajas;
+  
 
 class consorcios_control extends Controller
 {
@@ -45,15 +48,14 @@ class consorcios_control extends Controller
 
     public function show($id)
     {
-        $consorcio = consorcios::where('idcons', $id)->firstOrFail();
+        // with carga automáticamente los proveedores del consorcio
+        $consorcio = consorcios::with(['proveedoresPropios', 'unidadesFuncionales', 'cajas', 'gastos', 'proveedoresPropios.infoProveedor'])
+            ->where('idcons', $id)
+            ->firstOrFail();
 
-        // EL MISMO MOZO carga la segunda cosa en la bandeja
-        $prov = proveedoresPropios::where('idcons', $id)->get();
-
-        // El mozo sale a la mesa (view) con la bandeja completa
         return view('consorcios.show', [
-            'consorcio' => $consorcio,
-            'prov' => $prov
+            'consorcio' => $consorcio
+            // YA NO pasamos 'prov' => $prov, porque va adentro de $consorcio
         ]);
     }
 }
