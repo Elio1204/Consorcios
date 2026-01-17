@@ -49,7 +49,7 @@ class consorcios_control extends Controller
     public function show($id)
     {
         // with carga automáticamente los proveedores del consorcio
-        $consorcio = consorcios::with(['proveedoresPropios', 'unidadesFuncionales', 'cajas', 'gastos', 'proveedoresPropios.infoProveedor'])
+        $consorcio = consorcios::with(['proveedoresPropios', 'unidadesFuncionales', 'cajas', 'gastos.proveedoresPropios', 'gastos.controlesInfo'])
             ->where('idcons', $id)
             ->firstOrFail();
 
@@ -57,5 +57,7 @@ class consorcios_control extends Controller
             'consorcio' => $consorcio
             // YA NO pasamos 'prov' => $prov, porque va adentro de $consorcio
         ]);
+
+
     }
 }

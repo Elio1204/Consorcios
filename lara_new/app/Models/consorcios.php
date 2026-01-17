@@ -36,4 +36,9 @@ class consorcios extends Model
             ->where('liquidado', 'n');
         
     }
+     
+    public function proveedoresGenerales()
+    {
+        return $this->hasMany(proveedores::class, 'idcons', 'idcons');
+    }
 }

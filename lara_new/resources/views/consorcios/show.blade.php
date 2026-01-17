@@ -70,9 +70,9 @@
           <tbody class="text-gray-700">
             @foreach ($consorcio->gastos as $gasto)
             <tr class="border-b">
-              <td class="py-2">{{ $gasto->infoProveedor->proveedor ?? 'Proveedor no encontrado' }}</td>
+              <td class="py-2">{{ $gasto->proveedoresPropios->proveedor ?? 'Proveedor no encontrado' }}</td>
               <!-- <td class="py-2">{{ $gasto->rubro }}</td> -->
-              <td class="py-2">{{ $gasto->idcontrol }}</td>
+              <td class="py-2">{{ $gasto->controlesInfo->con_descripcion ?? 'Control no encontrado' }}</td>
               <td class="py-2">${{ number_format($gasto->monto, 0, ',', '.') }}</td>
               @if ($gasto->liquidado === 's')
                 <td class="py-2 text-green-600">Pagado</td>
