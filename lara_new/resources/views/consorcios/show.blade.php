@@ -104,15 +104,19 @@
             <th class="py-2 text-left">Fecha</th>
           </tr>
         </thead>
+
         <tbody class="text-gray-700">
+        @foreach ($consorcio->ListaPagos as $pago)
+
           <tr class="border-b">
-            <td class="py-2">Edesur</td>
+            <td class="py-2">{{ $pago->idproveedor ??  'Proveedor no encontrado' }}</td>
             <td class="py-2">Transferencia</td>
             <td class="py-2">OP-00045</td>
             <td class="py-2">$ 180.000</td>
             <td class="py-2">06/01/2026</td>
           </tr>
         </tbody>
+        @endforeach
       </table>
     </section>
 
