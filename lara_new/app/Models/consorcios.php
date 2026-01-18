@@ -46,10 +46,22 @@ class consorcios extends Model
     {
         return $this->hasMany(pagos::class, 'idcons', 'idcons')
         ->where('status', 'p')
-        ->where('iduf', '>', 0)
+        ->where('idproveedor', '>', 0)
         ->orderBy('idpago', 'desc')
         ->take(10)
         ;
-
     }
+
+    public function pagosUnidades(){
+        return $this->hasMany(pagos::class, 'idcons', 'idcons')
+        ->where('iduf' , '>', 0) 
+        ->orderBy('idpago', 'desc')
+        ->take(10) 
+        ;
+    }
+
+    public function gastosParticular()
+    {
+        return $this->hasMany(gastosParticulares::class, 'idcons', 'idcons');
+    }   
 }

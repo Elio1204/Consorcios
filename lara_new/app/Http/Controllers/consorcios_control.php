@@ -9,7 +9,8 @@ use App\Models\Gastos;
 use App\Models\proveedoresPropios;
 use App\Models\unidadesFuncionales;
 use App\Models\cajas;
-  use App\Models\pagos;
+use App\Models\pagos;
+use App\Models\gastosParticulares;
 
 class consorcios_control extends Controller
 {
@@ -49,7 +50,14 @@ class consorcios_control extends Controller
     public function show($id)
     {
         // with carga automáticamente los proveedores del consorcio
-        $consorcio = consorcios::with(['proveedoresPropios', 'unidadesFuncionales', 'cajas', 'gastos.proveedoresPropios', 'gastos.controlesInfo', 'ListaPagos'])
+        $consorcio = consorcios::with(['proveedoresPropios', 
+        // 'unidadesFuncionales', 
+        'cajas',
+        'gastos.proveedoresPropios',
+        'gastos.controlesInfo', 
+        'ListaPagos.proveedoresPropios', 
+        'gastosParticular.unidadesFuncionales',
+        'pagosUnidades.unidadesFuncionales'])
             ->where('idcons', $id)
             ->firstOrFail();
 
