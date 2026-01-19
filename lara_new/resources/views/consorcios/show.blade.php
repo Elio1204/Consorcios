@@ -25,6 +25,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard Consorcio</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
   </head>
 
   <body class="bg-gray-100 min-h-screen">
@@ -169,40 +170,83 @@
       </section>
 
       <!-- Cobros -->
-      <section class="bg-white rounded-2xl shadow p-6">
+      <section class="bg-white rounded-2xl shadow p-6" x-data="{ openModal: false }">
         <div class="flex justify-between items-center mb-4">
           <h2 class="text-xl font-semibold">Pagos de expensas</h2>
-          <button class="bg-emerald-600 text-white px-4 py-2 rounded-xl hover:bg-emerald-700">+ Registrar Cobro</button>
+          <button @click="openModal = true" class="bg-emerald-600 text-white px-4 py-2 rounded-xl hover:bg-emerald-700">+ Registrar Cobro</button>
+        </div>
+
+        <!-- Modal con formulario -->
+        <div x-show="openModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50" @click="openModal = false">
+          <div class="bg-white rounded-xl shadow-lg w-full max-w-2xl mx-4" @click.stop>
+            <form action="{{ route('gastos.store') }}" method="POST" @submit="openModal = false">
+              @csrf
+              <input type="hidden" name="idcons" value="{{ $consorcio->idcons }}">
+              
+              <!-- Header -->
+              <div class="flex justify-between items-center border-b p-6">
+                <h3 class="text-lg font-semibold">Registrar Cobro</h3>
+                <button type="button" @click="openModal = false" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+              </div>
+              
+              <!-- Body -->
+              <div class="p-6 space-y-4">
+                <div>
+                  <label class="block text-sm font-medium mb-2">Unidad Funcional</label>
+                  <input type="text" name="unidad" list="unidades-list" class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="Seleccionar unidad" required>
+                  <datalist id="unidades-list">
+                    @foreach ($consorcio->unidadesFuncionales as $unidad)
+                      <option value="{{ $unidad->uf }} - {{ $unidad->titular }}">
+                    @endforeach
+                  </datalist>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium mb-2">Monto</label>
+                  <input type="number" name="monto" step="0.01" class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="0.00" required>
+                </div>
+                <!-- <div>
+                  <label class="block text-sm font-medium mb-2">Fecha</label>
+                  <input type="date" name="fecha" class="w-full border border-gray-300 rounded-lg px-3 py-2" required>
+                </div> -->
+              </div>
+
+              <!-- Footer -->
+              <div class="flex justify-end gap-3 border-t p-6">
+                <button type="button" @click="openModal = false" class="px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50">Cancelar</button>
+                <button type="submit" class="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700">Guardar</button>
+              </div>
+            </form>
+          </div>
         </div>
 
         <table class="w-full text-sm">
-          <thead class="border-b">
-            <tr>
-              <th class="py-2 text-left">Unidad</th>
-              <th class="py-2 text-left">NRO PAGO</th>
-              <th class="py-2 text-left">Referencia</th>
-              <th class="py-2 text-left">Monto</th>
-              <th class="py-2 text-left">Fecha</th>
-            </tr>
-          </thead>
-          <tbody class="text-gray-700">
-            @forelse ($consorcio->pagosUnidades as $pago)
-            <tr class="border-b">
-              <td class="py-2"> {{ $pago->unidadesFuncionales->titular ?? 'Sin identificar' }}</td>
-              <td class="py-2"> {{ $pago->nro_pago }}</td>
-              <td class="py-2"> Sin Referencia</td>
-              <td class="py-2">$ {{ number_format($pago->importe_total, 2, ',', '.') }}</td>
-              <td class="py-2"> {{ \Carbon\Carbon::parse($pago->fecha)->format('d/m/Y') }} </td>
-            </tr>
-            @empty
-            <tr>
-              <td colspan="5" class="py-4 text-center text-gray-500 italic">
-                No se encontraron pagos registrados.
-              </td>
-            </tr>
-            @endforelse
-          </tbody>
-        </table>
+        <thead class="border-b">
+          <tr>
+            <th class="py-2 text-left">Unidad</th>
+            <th class="py-2 text-left">NRO PAGO</th>
+            <th class="py-2 text-left">Referencia</th>
+            <th class="py-2 text-left">Monto</th>
+            <th class="py-2 text-left">Fecha</th>
+          </tr>
+        </thead>
+        <tbody class="text-gray-700">
+          @forelse ($consorcio->pagosUnidades as $pago)
+          <tr class="border-b">
+            <td class="py-2"> {{ $pago->unidadesFuncionales->titular ?? 'Sin identificar' }}</td>
+            <td class="py-2"> {{ $pago->nro_pago }}</td>
+            <td class="py-2"> Sin Referencia</td>
+            <td class="py-2">$ {{ number_format($pago->importe_total, 2, ',', '.') }}</td>
+            <td class="py-2"> {{ \Carbon\Carbon::parse($pago->fecha)->format('d/m/Y') }} </td>
+          </tr>
+          @empty
+          <tr>
+            <td colspan="5" class="py-4 text-center text-gray-500 italic">
+              No se encontraron pagos registrados.
+            </td>
+          </tr>
+          @endforelse
+        </tbody>
+      </table>
       </section>
 
     </div>

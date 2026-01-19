@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 
 class gastosParticulares extends Model
 {
@@ -16,5 +17,6 @@ class gastosParticulares extends Model
             
         ;
     }
+    protected $guarded = [];
 
 }
