@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\App;
 use App\Http\Controllers\bancos_movs;
 use App\Models\gastosParticulares;
 use App\Http\Controllers\GastosParticularesController;
+use App\Http\Controllers\gastosProveedoresController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -40,3 +41,8 @@ Route::get('/consorcios/{idcons}', [consorcios_control::class, 'show'])->name('c
 // Rutas para mostrar y procesar envio de datos de gastos.
 // Route::get('/gastos/create/{idcons}', [GastosParticularesController::class, 'create'])->name('gastos.create');
 Route::post('/gastos/store', [GastosParticularesController::class, 'store'])->name('gastos.store');
+
+// Ruta para los gastos
+
+Route::post('/proveedores/store', [gastosProveedoresController::class, 'store'])->name('proveedore.store');
+

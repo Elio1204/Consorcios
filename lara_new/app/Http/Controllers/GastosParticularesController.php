@@ -16,7 +16,7 @@ class GastosParticularesController extends Controller
             'idcons' => "required|integer",
             'iduf' => "required|integer",
             'gas_par_importe' => "required|numeric",
-            'descrip' => "required|string|max:255",
+            'gas_par_saldo' => "required|numeric",
         ]);
 
         //crear el registros en la db
@@ -25,10 +25,16 @@ class GastosParticularesController extends Controller
         $gasto->idcons = $request->input('idcons');
         $gasto->iduf = $request->input('iduf');
         $gasto->gas_par_importe = $request->input('gas_par_importe');
-        $gasto->descrip = $request->input('descrip');;
-        // $gasto->fecha = now();
-        $gasto->save();
+        $gasto->gas_par_descripcion = "TESTING GASTO PARTICULAR";
+        $gasto->gas_par_saldo = $request->input('gas_par_saldo');
+        $gasto->idcajacons = 1;
+        $gasto->gas_par_fecha = now();
+        try {
+            $gasto->save();
+            return back()->with('success', "Se guardoo correctamente el gasto particular.");
+        } catch (\Exception $e) {
+            return "Error de DB: " . $e->getMessage();
+        }
 
-        return redirect()->back()->with('success', 'Gasto agregado correctamente');
-    }
-}
+    } 
+} 

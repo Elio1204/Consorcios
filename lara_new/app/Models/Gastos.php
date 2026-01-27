@@ -19,4 +19,7 @@ class Gastos extends Model
     {
         return $this->belongsTo(controles::class, 'idcontrol', 'idcontrol');
     }
+
+    protected $guarded = [];
+
 }
