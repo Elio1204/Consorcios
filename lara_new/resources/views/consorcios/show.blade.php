@@ -64,11 +64,16 @@
               <div class="p-6 space-y-4">
                 <div>
                   <label class="block text-sm font-medium mb-2">Proveedor</label>
-                  <input type="text" name="idproveedor" list="proveedores" class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="Seleccione Proveedor" required>
+
+                  <input type="text" name="idproveedor" list="prov-list" class="w-full ..." placeholder="Seleccione Proveedor" required>
+
                   <datalist id="prov-list">
                     @foreach ($consorcio->proveedoresPropios as $prov)
-                    <option value="{{ $prov->idproveedor }}">
-                      @endforeach
+                      <!-- Primer parametro es el objeto, segundo es el campo a mostrar -->
+                      <option value="{{ $prov->idproveedor }}">
+                        {{ $prov->proveedor->proveedor }}
+                      </option>
+                    @endforeach
                   </datalist>
                 </div>
                 <div>
@@ -77,7 +82,24 @@
                 </div>
                 <div>
                   <label class="block text-sm font-medium mb-2">Control</label>
-                  <input type="number" name="control" step="0.01" class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="0.00" required>
+
+                  <input type="text" name="control" list="control-list" class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="Seleccionar control" required>
+                  <datalist id="control-list">
+                    @foreach ($consorcio->gastos as $gasto)
+                    
+                        @if($gasto->controlesInfo)
+                          @foreach ($gasto->controlesInfo as $ctr)
+                        
+                            @if(is_object($ctr))
+                              <option value="{{ $ctr->idcontrol }}">
+                                {{ $ctr->con_descripcion }}
+                              </option>
+                            @endif
+                          @endforeach
+                        @endif
+                    @endforeach
+                  </datalist>
+
                 </div>
 
                 <div>

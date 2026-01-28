@@ -24,7 +24,10 @@ class gastosProveedoresController extends Controller
         $gasto->idcons = $request->input('idcons');
         $gasto->idproveedor = $request->input('idproveedor');
         $gasto->monto = $request->input('monto');
-        $gasto->idcontrl = $request->input('control');
+        $gasto->idcontrol = $request->input('control');
+        $gasto->descrip = "Gasto creado desde formulario de proveedor propio";
+        $gasto->medio_pago = "efectivo";
+        $gasto->prioridad = 2;
         $gasto->fecha = $request->input('fecha');
 
 
@@ -35,6 +38,8 @@ class gastosProveedoresController extends Controller
             return back()->with('success', "Se guardoo correctamente el gasto particular.");
         }catch(\Exception $e) {
             return "Error de DB: " . $e->getMessage();
+            return back()->with('error', "No se ha podido guardar el gasto particular.");
+            
         }
 
     }
