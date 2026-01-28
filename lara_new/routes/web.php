@@ -10,7 +10,7 @@ use App\Http\Controllers\bancos_movs;
 use App\Models\gastosParticulares;
 use App\Http\Controllers\GastosParticularesController;
 use App\Http\Controllers\gastosProveedoresController;
-
+use App\Http\Controllers\pagosProveedoresController;
 Route::get('/', function () {
     return view('welcome');
 });
@@ -45,4 +45,9 @@ Route::post('/gastos/store', [GastosParticularesController::class, 'store'])->na
 // Ruta para los gastos
 
 Route::post('/proveedores/store', [gastosProveedoresController::class, 'store'])->name('proveedore.store');
+
+
+// ruta para los pagos
+Route::post('pagos/store', [pagosProveedoresController::class, 'store'])->name('pagos.store');
+
 

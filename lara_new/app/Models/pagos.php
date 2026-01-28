@@ -18,4 +18,6 @@ class pagos extends Model
     {
         return $this->belongsTo(ConsUniFun::class, 'iduf', 'iduf');
     }
+
+    protected $guarded = [];
 }
