@@ -1,5 +1,7 @@
 <style>
-    [x-cloak] { display: none !important; }
+  [x-cloak] {
+    display: none !important;
+  }
 </style>
 
 <x-app-layout>
@@ -44,8 +46,28 @@
         </div>
       </div>
 
-      <!-- Gastos a Proveedores -->
-      <section class="bg-white rounded-2xl shadow p-6 mb-10" x-data="{ openModal: false }">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      <!-- ------------ --------------------------------------Gastos a Proveedores ------------------------------------------------------------>
+      <section class="bg-white rounded-2xl shadow p-6 mb-10  "  
+      
+      x-data="{   openModal: false, openVerGastoProveedores: false, gastoproveSeleccionado: null }">
+
+
         <div class="flex justify-between items-center mb-4">
           <h2 class="text-xl font-semibold">Gastos a Proveedores</h2>
           <button type="button" x-on:click="openModal = true" class="bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700">+ Registrar Gasto</button>
@@ -130,6 +152,7 @@
               <th class="py-2 text-left">Monto</th>
               <th class="py-2 text-left">Estado</th>
               <th class="py-2 text-left">Fecha</th>
+              <th class="py-2 text-left">Acciones</th>
             </tr>
           </thead>
           <tbody class="text-gray-700">
@@ -145,11 +168,21 @@
               <td class="py-2 text-yellow-600">Pendiente</td>
               @endif
               <td class="py-2">{{ \Carbon\Carbon::parse($gasto->fecha)->format('d/m/Y') }}</td>
+
+
+              <td class="py-2">
+                <button @click="gastoproveSeleccionado = {{ json_encode($gasto) }};  openVerGastoProveedores = true" class="text-blue-600 hover:underline">
+                  Ver
+                </button>
+              </td>
+
+
+
             </tr>
             @endforeach
           </tbody>
         </table>
-
+        @include('consorcios.partials.modal-ver-gasto-proveedores')
       </section>
 
 
@@ -161,7 +194,21 @@
 
 
 
-      <!-- Pagos pendientes a Proveedores -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      <!-- --------------------------------------------------------Pagos pendientes a Proveedores--------------------------------------------- -->
       <section class="bg-white rounded-2xl shadow p-6 mb-10" x-data="{ openModal: false, openVerPago: false }">
         <div class="flex justify-between items-center mb-4">
           <h2 class="text-xl font-semibold">Pagos pendientes a Proveedores</h2>
@@ -273,6 +320,23 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       <!-- Gastos particulares de unidades funcionales -->
       <section class="bg-white rounded-2xl shadow p-6 mb-10" x-data="{ openModal: false }">
         <div class="flex justify-between items-center mb-4">
@@ -336,6 +400,7 @@
               <th class="py-2 text-left">Periodo</th>
               <th class="py-2 text-left">Monto</th>
               <th class="py-2 text-left">Estado</th>
+              <th class="py-2 text-left">Acciones</th>
             </tr>
           </thead>
           <tbody class="text-gray-700">
@@ -347,6 +412,11 @@
               <td class="py-2">{{ $gasPar->gas_par_fecha }}</td>
               <td class="py-2">$ {{ number_format($gasPar->gas_par_importe, 2, ',', '.') }}</td>
               <td class="py-2 text-red-600">Adeuda</td>
+              <td class="py-2">
+                <button class="text-blue-600 hover:underline">
+                  Ver
+                </button>
+              </td>
             </tr>
             @empty
             <tr>
@@ -417,6 +487,7 @@
               <th class="py-2 text-left">Referencia</th>
               <th class="py-2 text-left">Monto</th>
               <th class="py-2 text-left">Fecha</th>
+              <th class="py-2 text-left">Acciones</th>
             </tr>
           </thead>
           <tbody class="text-gray-700">
@@ -427,6 +498,11 @@
               <td class="py-2"> Sin Referencia</td>
               <td class="py-2">$ {{ number_format($pago->importe_total, 2, ',', '.') }}</td>
               <td class="py-2"> {{ \Carbon\Carbon::parse($pago->fecha)->format('d/m/Y') }} </td>
+              <td class="py-2">
+                <button class="text-blue-600 hover:underline">
+                  Ver
+                </button>
+              </td>
             </tr>
             @empty
             <tr>
