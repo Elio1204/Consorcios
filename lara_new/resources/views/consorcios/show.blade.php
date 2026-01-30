@@ -1,3 +1,7 @@
+<style>
+    [x-cloak] { display: none !important; }
+</style>
+
 <x-app-layout>
   <x-slot name="header">
     <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -158,7 +162,7 @@
 
 
       <!-- Pagos pendientes a Proveedores -->
-      <section class="bg-white rounded-2xl shadow p-6 mb-10" x-data="{ openModal: false }">
+      <section class="bg-white rounded-2xl shadow p-6 mb-10" x-data="{ openModal: false, openVerPago: false }">
         <div class="flex justify-between items-center mb-4">
           <h2 class="text-xl font-semibold">Pagos pendientes a Proveedores</h2>
           <button type="button" x-on:click="openModal = true" class="bg-green-600 text-white px-4 py-2 rounded-xl hover:bg-green-700">+ Registrar Pago</button>
@@ -206,6 +210,9 @@
                   <label class="block text-sm font-medium mb-2">Fecha</label>
                   <input type="date" name="fecha" class="w-full border border-gray-300 rounded-lg px-3 py-2" required>
                 </div>
+
+
+
               </div>
 
               <!-- Footer -->
@@ -225,6 +232,7 @@
               <th class="py-2 text-left">Referencia</th>
               <th class="py-2 text-left">Monto</th>
               <th class="py-2 text-left">Fecha</th>
+              <th class="py-2 text-left">Acciones</th>
             </tr>
           </thead>
           <tbody class="text-gray-700">
@@ -235,6 +243,13 @@
               <td class="py-2"> {{ $pago->nro_pago }}</td>
               <td class="py-2">$ {{ number_format($pago->importe_total, 2, ',', '.') }}</td>
               <td class="py-2"> {{ \Carbon\Carbon::parse($pago->fecha)->format('d/m/Y') }} </td>
+
+              <td class="py-2">
+                <button @click="openVerPago = true" class="text-blue-600 hover:underline">
+                  Ver
+                </button>
+              </td>
+
             </tr>
             @empty
             <tr>
@@ -245,12 +260,14 @@
             @endforelse
           </tbody>
         </table>
+
+        @include('consorcios.partials.modal-ver-pago')
       </section>
 
 
 
 
-      
+
 
 
 
@@ -265,81 +282,81 @@
 
         <!-- Modal Gasto Particular -->
         <div x-show="openModal" x-transition class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50" x-on:click="openModal = false">
-            <div class="bg-white rounded-xl shadow-lg w-full max-w-2xl mx-4" @click.stop>
-              <form action="{{ route('gastos.store') }}" method="POST">
-                @csrf
-                <input type="hidden" name="idcons" value="{{ $consorcio->idcons }}">
+          <div class="bg-white rounded-xl shadow-lg w-full max-w-2xl mx-4" @click.stop>
+            <form action="{{ route('gastos.store') }}" method="POST">
+              @csrf
+              <input type="hidden" name="idcons" value="{{ $consorcio->idcons }}">
 
-                <!-- Header -->
-                <div class="flex justify-between items-center border-b p-6">
-                  <h3 class="text-lg font-semibold">Nuevo Gasto Particular</h3>
-                  <button type="button" x-on:click="openModal = false" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+              <!-- Header -->
+              <div class="flex justify-between items-center border-b p-6">
+                <h3 class="text-lg font-semibold">Nuevo Gasto Particular</h3>
+                <button type="button" x-on:click="openModal = false" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+              </div>
+
+              <!-- Body -->
+              <div class="p-6 space-y-4">
+                <div>
+                  <label class="block text-sm font-medium mb-2">Unidad Funcional</label>
+                  <input type="text" name="iduf" list="unidades-particulares-list" class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="Seleccionar unidad" required>
+                  <datalist id="unidades-particulares-list">
+                    @foreach ($consorcio->unidadesFuncionales as $unidad)
+                    <option value="{{ $unidad->iduf }}">
+                      @endforeach
+                  </datalist>
                 </div>
-
-                <!-- Body -->
-                <div class="p-6 space-y-4">
-                  <div>
-                    <label class="block text-sm font-medium mb-2">Unidad Funcional</label>
-                    <input type="text" name="iduf" list="unidades-particulares-list" class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="Seleccionar unidad" required>
-                    <datalist id="unidades-particulares-list">
-                      @foreach ($consorcio->unidadesFuncionales as $unidad)
-                      <option value="{{ $unidad->iduf }}">
-                        @endforeach
-                    </datalist>
-                  </div>
-                  <!-- <div>
+                <!-- <div>
                   <label class="block text-sm font-medium mb-2">Concepto</label>
                   <input type="text" name="gas_par_descripcion" class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="Descripción del gasto" required>
                 </div> -->
-                  <div>
-                    <label class="block text-sm font-medium mb-2">Monto</label>
-                    <input type="number" name="gas_par_importe" step="0.01" class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="0.00" required>
-                  </div>
-                  <div>
-                    <label class="block text-sm font-medium mb-2">Saldo</label>
-                    <input type="number" name="gas_par_saldo" step="0.01" class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="0.00" required>
-                  </div>
+                <div>
+                  <label class="block text-sm font-medium mb-2">Monto</label>
+                  <input type="number" name="gas_par_importe" step="0.01" class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="0.00" required>
                 </div>
+                <div>
+                  <label class="block text-sm font-medium mb-2">Saldo</label>
+                  <input type="number" name="gas_par_saldo" step="0.01" class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="0.00" required>
+                </div>
+              </div>
 
-                <!-- Footer -->
-                <div class="flex justify-end gap-3 border-t p-6">
-                  <button type="button" x-on:click="openModal = false" class="px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50">Cancelar</button>
-                  <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">Guardar</button>
-                </div>
-              </form>
-            </div>
+              <!-- Footer -->
+              <div class="flex justify-end gap-3 border-t p-6">
+                <button type="button" x-on:click="openModal = false" class="px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50">Cancelar</button>
+                <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">Guardar</button>
+              </div>
+            </form>
+          </div>
         </div>
 
         <table class="w-full text-sm">
-        <thead class="border-b">
-          <tr>
-            <th class="py-2 text-left">Unidad</th>
-            <th class="py-2 text-left">Propietario</th>
-            <th class="py-2 text-left">Concepto</th>
-            <th class="py-2 text-left">Periodo</th>
-            <th class="py-2 text-left">Monto</th>
-            <th class="py-2 text-left">Estado</th>
-          </tr>
-        </thead>
-        <tbody class="text-gray-700">
-          @forelse ($consorcio->gastosParticular as $gasPar)
-          <tr class="border-b">
-            <td class="py-2">{{ $gasPar->unidadesFuncionales->uf ?? 'N/D' }}</td>
-            <td class="py-2">{{ $gasPar->unidadesFuncionales->titular ?? 'N/D' }}</td>
-            <td class="py-2">{{ $gasPar->gas_par_descripcion }}</td>
-            <td class="py-2">{{ $gasPar->gas_par_fecha }}</td>
-            <td class="py-2">$ {{ number_format($gasPar->gas_par_importe, 2, ',', '.') }}</td>
-            <td class="py-2 text-red-600">Adeuda</td>
-          </tr>
-          @empty
-          <tr>
-            <td colspan="6" class="py-4 text-center text-gray-500 italic">
-              No se encontraron gastos particulares registrados.
-            </td>
-          </tr>
-              @endforelse
-            </tbody>
-          </table>
+          <thead class="border-b">
+            <tr>
+              <th class="py-2 text-left">Unidad</th>
+              <th class="py-2 text-left">Propietario</th>
+              <th class="py-2 text-left">Concepto</th>
+              <th class="py-2 text-left">Periodo</th>
+              <th class="py-2 text-left">Monto</th>
+              <th class="py-2 text-left">Estado</th>
+            </tr>
+          </thead>
+          <tbody class="text-gray-700">
+            @forelse ($consorcio->gastosParticular as $gasPar)
+            <tr class="border-b">
+              <td class="py-2">{{ $gasPar->unidadesFuncionales->uf ?? 'N/D' }}</td>
+              <td class="py-2">{{ $gasPar->unidadesFuncionales->titular ?? 'N/D' }}</td>
+              <td class="py-2">{{ $gasPar->gas_par_descripcion }}</td>
+              <td class="py-2">{{ $gasPar->gas_par_fecha }}</td>
+              <td class="py-2">$ {{ number_format($gasPar->gas_par_importe, 2, ',', '.') }}</td>
+              <td class="py-2 text-red-600">Adeuda</td>
+            </tr>
+            @empty
+            <tr>
+              <td colspan="6" class="py-4 text-center text-gray-500 italic">
+                No se encontraron gastos particulares registrados.
+              </td>
+            </tr>
+            @endforelse
+          </tbody>
+        </table>
       </section>
 
       <!-- Pagos de expensas -->
@@ -351,46 +368,46 @@
 
         <!-- Modal Cobro -->
         <div x-show="openModal" x-transition class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50" x-on:click="openModal = false">
-            <div class="bg-white rounded-xl shadow-lg w-full max-w-2xl mx-4" @click.stop>
-              <form action="{{ route('gastos.store') }}" method="POST">
-                @csrf
-                <input type="hidden" name="idcons" value="{{ $consorcio->idcons }}">
+          <div class="bg-white rounded-xl shadow-lg w-full max-w-2xl mx-4" @click.stop>
+            <form action="{{ route('gastos.store') }}" method="POST">
+              @csrf
+              <input type="hidden" name="idcons" value="{{ $consorcio->idcons }}">
 
-                <!-- Header -->
-                <div class="flex justify-between items-center border-b p-6">
-                  <h3 class="text-lg font-semibold">Registrar Cobro</h3>
-                  <button type="button" x-on:click="openModal = false" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
-                </div>
+              <!-- Header -->
+              <div class="flex justify-between items-center border-b p-6">
+                <h3 class="text-lg font-semibold">Registrar Cobro</h3>
+                <button type="button" x-on:click="openModal = false" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+              </div>
 
-                <!-- Body -->
-                <div class="p-6 space-y-4">
-                  <div>
-                    <label class="block text-sm font-medium mb-2">Unidad Funcional</label>
-                    <input type="text" name="iduf" list="unidades-cobros-list" class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="Seleccionar unidad" required>
-                    <datalist id="unidades-cobros-list">
-                      @foreach ($consorcio->unidadesFuncionales as $unidad)
-                      <option value="{{ $unidad->iduf }}">{{ $unidad->uf }}</option>
-                      @endforeach
-                    </datalist>
-                  </div>
-                  <div>
-                    <label class="block text-sm font-medium mb-2">Monto</label>
-                    <input type="number" name="importe_total" step="0.01" class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="0.00" required>
-                  </div>
-                  <div>
-                    <label class="block text-sm font-medium mb-2">Número de Pago</label>
-                    <input type="text" name="nro_pago" class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="Número de pago" required>
-                  </div>
+              <!-- Body -->
+              <div class="p-6 space-y-4">
+                <div>
+                  <label class="block text-sm font-medium mb-2">Unidad Funcional</label>
+                  <input type="text" name="iduf" list="unidades-cobros-list" class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="Seleccionar unidad" required>
+                  <datalist id="unidades-cobros-list">
+                    @foreach ($consorcio->unidadesFuncionales as $unidad)
+                    <option value="{{ $unidad->iduf }}">{{ $unidad->uf }}</option>
+                    @endforeach
+                  </datalist>
                 </div>
+                <div>
+                  <label class="block text-sm font-medium mb-2">Monto</label>
+                  <input type="number" name="importe_total" step="0.01" class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="0.00" required>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium mb-2">Número de Pago</label>
+                  <input type="text" name="nro_pago" class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="Número de pago" required>
+                </div>
+              </div>
 
-                <!-- Footer -->
-                <div class="flex justify-end gap-3 border-t p-6">
-                  <button type="button" x-on:click="openModal = false" class="px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50">Cancelar</button>
-                  <button type="submit" class="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700">Guardar</button>
-                </div>
-              </form>
-            </div>
+              <!-- Footer -->
+              <div class="flex justify-end gap-3 border-t p-6">
+                <button type="button" x-on:click="openModal = false" class="px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50">Cancelar</button>
+                <button type="submit" class="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700">Guardar</button>
+              </div>
+            </form>
           </div>
+        </div>
 
         <table class="w-full text-sm">
           <thead class="border-b">
@@ -422,6 +439,6 @@
         </table>
       </section>
 
-</div>
-</div>
+    </div>
+  </div>
 </x-app-layout>
