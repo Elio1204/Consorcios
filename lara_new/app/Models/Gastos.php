@@ -9,6 +9,8 @@ class Gastos extends Model
     //
     protected $table = 'gastos';
     public $timestamps = false;
+    
+    protected $primaryKey = 'idgasto';
 
     public function proveedoresPropios()
     {

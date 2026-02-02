@@ -43,4 +43,18 @@ class gastosProveedoresController extends Controller
         }
 
     }
+
+    public function update(Request $request, $idgasto){
+        $gasto = Gastos::findOrFail($idgasto);
+        $gasto->update([
+        'idproveedor' => $request->idproveedor,
+        'monto'       => $request->monto,
+        'descrip'     => $request->descrip,
+        'medio_pago'  => $request->medio_pago,
+        'fecha'       => $request->fecha,
+    ]);
+        return back()->with('success', 'GGasto actualizado correctamente');
+
+    }
+
 }

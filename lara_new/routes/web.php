@@ -48,6 +48,11 @@ Route::post('/proveedores/store', [gastosProveedoresController::class, 'store'])
 
 
 // ruta para los pagos
-Route::post('pagos/store', [pagosProveedoresController::class, 'store'])->name('pagos.store');
+Route::post('/pagos/store', [pagosProveedoresController::class, 'store'])->name('pagos.store');
+
+
+//ruta para actualziar los pagos
+
+Route::put('/gastos-proveedores/{idgasto}', [gastosProveedoresController::class,'update'])->name('gastos-proveedores.update'); 
 
 
