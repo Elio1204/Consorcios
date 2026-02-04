@@ -10,6 +10,7 @@ class gastosParticulares extends Model
     //
     protected $table = 'gastos_particulares';
     public $timestamps = false;
+    protected $primaryKey = 'gas_par_registro';
 
     public function unidadesFuncionales()
     {

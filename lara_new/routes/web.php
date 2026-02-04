@@ -56,3 +56,13 @@ Route::post('/pagos/store', [pagosProveedoresController::class, 'store'])->name(
 Route::put('/gastos-proveedores/{idgasto}', [gastosProveedoresController::class,'update'])->name('gastos-proveedores.update'); 
 
 
+//rutas para pagos pendientes a proveedor
+
+Route::put('/pago-pendiente-proveedores/{idpago}', [pagosProveedoresController::class, 'update'])->name('pago-pendiente.update');
+
+
+
+//ruta para gastos particulares
+
+Route::put('/pago-particular/{gas_par_registro}', [GastosParticularesController::class, 'update'])->name('gasto-particular.update');
+

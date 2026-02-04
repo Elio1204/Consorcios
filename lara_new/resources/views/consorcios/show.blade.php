@@ -63,9 +63,9 @@
 
 
       <!-- ------------ --------------------------------------Gastos a Proveedores ------------------------------------------------------------>
-      <section class="bg-white rounded-2xl shadow p-6 mb-10  "  
-      
-      x-data="{   openModal: false, openVerGastoProveedores: false, gastoproveSeleccionado: null }">
+      <section class="bg-white rounded-2xl shadow p-6 mb-10  "
+
+        x-data="{   openModal: false, openVerGastoProveedores: false, gastoproveSeleccionado: null }">
 
 
         <div class="flex justify-between items-center mb-4">
@@ -209,7 +209,7 @@
 
 
       <!-- --------------------------------------------------------Pagos pendientes a Proveedores--------------------------------------------- -->
-      <section class="bg-white rounded-2xl shadow p-6 mb-10" x-data="{ openModal: false, openVerPago: false }">
+      <section class="bg-white rounded-2xl shadow p-6 mb-10" x-data="{ openModal: false, openVerPago: false, pagoSeleccionado:null }">
         <div class="flex justify-between items-center mb-4">
           <h2 class="text-xl font-semibold">Pagos pendientes a Proveedores</h2>
           <button type="button" x-on:click="openModal = true" class="bg-green-600 text-white px-4 py-2 rounded-xl hover:bg-green-700">+ Registrar Pago</button>
@@ -292,7 +292,7 @@
               <td class="py-2"> {{ \Carbon\Carbon::parse($pago->fecha)->format('d/m/Y') }} </td>
 
               <td class="py-2">
-                <button @click="openVerPago = true" class="text-blue-600 hover:underline">
+                <button @click="pagoSeleccionado = {{ json_encode($pago) }};  openVerPago = true" class="text-blue-600 hover:underline">
                   Ver
                 </button>
               </td>
@@ -337,8 +337,20 @@
 
 
 
+
+
+
+
       <!-- Gastos particulares de unidades funcionales -->
-      <section class="bg-white rounded-2xl shadow p-6 mb-10" x-data="{ openModal: false }">
+      <section class="bg-white rounded-2xl shadow p-6 mb-10" x-data="{ 
+      openModal: false,
+    openVerPagoParticular: false, 
+    pagoParticularSeleccionado: null,
+    seleccionarPago(pago) {
+        this.pagoParticularSeleccionado = pago;
+        this.openVerPagoParticular = true;
+    }
+}">
         <div class="flex justify-between items-center mb-4">
           <h2 class="text-xl font-semibold">Gastos particulares de unidades funcionales</h2>
           <button type="button" x-on:click="openModal = true" class="bg-indigo-600 text-white px-4 py-2 rounded-xl hover:bg-indigo-700">+ Nuevo Gasto</button>
@@ -413,7 +425,7 @@
               <td class="py-2">$ {{ number_format($gasPar->gas_par_importe, 2, ',', '.') }}</td>
               <td class="py-2 text-red-600">Adeuda</td>
               <td class="py-2">
-                <button class="text-blue-600 hover:underline">
+                <button @click="seleccionarPago({{ json_encode($gasPar) }})" class="text-blue-600 hover:underline">
                   Ver
                 </button>
               </td>
@@ -427,7 +439,19 @@
             @endforelse
           </tbody>
         </table>
+        @include('consorcios.partials.modal-ver-gastos-particulares')
       </section>
+
+
+
+
+
+
+
+
+
+
+
 
       <!-- Pagos de expensas -->
       <section class="bg-white rounded-2xl shadow p-6 mb-10" x-data="{ openModal: false }">

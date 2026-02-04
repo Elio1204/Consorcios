@@ -37,4 +37,17 @@ class GastosParticularesController extends Controller
         }
 
     } 
+
+
+    public function update(Request $request, $gas_par_registro){
+            $gasto = gastosParticulares::findOrFail($gas_par_registro);
+            $gasto->update([
+                'iduf' => $request->iduf,
+                'gas_par_descripcion' => $request->gas_par_descripcion,
+                'gas_par_saldo' => $request->gas_par_saldo,
+                'gas_par_fecha'=> $request->gas_par_fecha,
+            ]);
+            return back()->with('success', 'Gasto particular actualizado correctamente');   
+    }
+
 } 

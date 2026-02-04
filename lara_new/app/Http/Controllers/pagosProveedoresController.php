@@ -9,10 +9,11 @@ use App\Models\pagos as Pago;
 class pagosProveedoresController extends Controller
 {
     //
-    public function store(Request $request){
-      //
+    public function store(Request $request)
+    {
+        //
         $request->validate([
-            'idcons'=> "required|integer",
+            'idcons' => "required|integer",
             'idproveedor' => "required|integer",
             'importe_total' => "required|numeric",
             'medio_pago' => "required|string",
@@ -35,12 +36,26 @@ class pagosProveedoresController extends Controller
 
 
         // guardado del pago
-        try{
+        try {
             $pago->save();
             return back()->with('success', "Se guardoo correctamente el pago al proveedor.");
-        }catch(\Exception $e) {
+        } catch (\Exception $e) {
             return back()->with('error', "No se ha podido guardar el pago al proveedor. Error: " . $e->getMessage());
         }
+    }
 
-}
+
+
+    public function update(Request $request, $idpago)
+    {
+        $gasto = Pago::findOrFail($idpago);
+        $gasto->update([
+            'idproveedor' => $request->idproveedor,
+            'importe_total'       => $request->importe_total,
+            'observaciones'     => $request->observaciones,
+            'medio_pago'  => $request->medio_pago,
+            'fecha'       => $request->fecha,
+        ]);
+        return back()->with('success', 'GGasto actualizado correctamente');
+    }
 }

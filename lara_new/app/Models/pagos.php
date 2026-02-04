@@ -9,6 +9,7 @@ class pagos extends Model
     //
     protected $table = 'pagos';
     public $timestamps = false;
+    protected $primaryKey = 'idpago';
 
     public function proveedoresPropios()
     {
